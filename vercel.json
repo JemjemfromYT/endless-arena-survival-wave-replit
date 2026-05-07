@@ -1,0 +1,7 @@
+{
+    "rewrites": [
+      { "source": "/game/images/:path*", "destination": "https://REPLIT_BACKEND_URL/game/images/:path*" },
+      { "source": "/game/sounds/:path*", "destination": "https://REPLIT_BACKEND_URL/game/sounds/:path*" }
+    ]
+  }
+  
