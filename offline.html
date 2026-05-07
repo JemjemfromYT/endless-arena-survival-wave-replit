@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Endless Arena — Offline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background: #0a0010;
+        background: radial-gradient(ellipse at 50% 30%, #1a003a 0%, #0a0010 70%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Orbitron', Arial, sans-serif;
+        color: #fff;
+        overflow: hidden;
+      }
+
+      /* Animated grid background */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(34,232,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34,232,255,0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        animation: gridMove 8s linear infinite;
+        pointer-events: none;
+      }
+      @keyframes gridMove { to { background-position: 0 40px; } }
+
+      .logo {
+        font-size: clamp(1.6rem, 7vw, 2.8rem);
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #22e8ff, #ff2bd6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.4em;
+        text-shadow: none;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tagline {
+        font-size: clamp(0.55rem, 2.5vw, 0.75rem);
+        letter-spacing: 0.35em;
+        color: #22e8ff88;
+        text-transform: uppercase;
+        margin-bottom: 3em;
+        position: relative;
+        z-index: 1;
+      }
+
+      .icon {
+        font-size: 3.5rem;
+        margin-bottom: 0.4em;
+        animation: pulse 2.5s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: 0.6; transform: scale(0.92); }
+      }
+
+      .status-msg {
+        font-size: clamp(0.75rem, 3.5vw, 1rem);
+        letter-spacing: 0.1em;
+        color: #ff2bd6cc;
+        text-transform: uppercase;
+        margin-bottom: 0.5em;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sub-msg {
+        font-size: clamp(0.6rem, 2.8vw, 0.75rem);
+        color: #aaa;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        max-width: 280px;
+        line-height: 1.6;
+        margin-bottom: 2.5em;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hint {
+        font-size: clamp(0.55rem, 2.4vw, 0.65rem);
+        color: #22e8ff55;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.05em;
+        text-align: center;
+        max-width: 280px;
+        line-height: 1.5;
+        margin-bottom: 2.5em;
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn {
+        font-family: 'Orbitron', Arial, sans-serif;
+        font-size: clamp(0.7rem, 3vw, 0.85rem);
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #fff;
+        background: transparent;
+        border: 2px solid #22e8ff;
+        border-radius: 6px;
+        padding: 0.75em 2.5em;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 0 18px rgba(34,232,255,0.35), inset 0 0 12px rgba(34,232,255,0.08);
+        transition: box-shadow 0.2s, background 0.2s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn:active {
+        background: rgba(34,232,255,0.12);
+        box-shadow: 0 0 28px rgba(34,232,255,0.6), inset 0 0 18px rgba(34,232,255,0.15);
+      }
+
+      #trying { display: none; font-size: 0.65rem; color: #22e8ff88; letter-spacing: 0.2em;
+        text-transform: uppercase; margin-top: 1.5em; position: relative; z-index: 1;
+        animation: blink 1s step-start infinite; }
+      @keyframes blink { 50% { opacity: 0; } }
+    </style>
+  </head>
+  <body>
+    <div class="logo">ENDLESS ARENA</div>
+    <div class="tagline">Survival Wave</div>
+
+    <div class="icon">📡</div>
+    <div class="status-msg">No Connection</div>
+    <div class="sub-msg">
+      Connect to the internet to play for the first time.<br>
+      After that, singleplayer works fully offline!
+    </div>
+    <div class="hint">
+      Already played before? Tap Retry —<br>
+      your cached game will load instantly.
+    </div>
+
+    <button class="btn" id="retryBtn" onclick="doRetry()">RETRY</button>
+    <div id="trying">Loading from cache…</div>
+
+    <script>
+      var GAME = 'https://jemjemfromyt.github.io/endless-arena-survival-wave-replit/game/index.html';
+
+      function doRetry() {
+        document.getElementById('trying').style.display = 'block';
+        document.getElementById('retryBtn').disabled = true;
+        // Ask Median to navigate to the game — SW cache will serve it offline
+        if (typeof gonative !== 'undefined' && gonative.webview && gonative.webview.loadUrl) {
+          gonative.webview.loadUrl({ url: GAME });
+        } else if (typeof gonative !== 'undefined' && gonative.webview && gonative.webview.reload) {
+          gonative.webview.reload();
+        } else {
+          window.location.href = GAME;
+        }
+      }
+
+      // Auto-attempt after 1.5 s — succeeds silently if SW cache exists
+      setTimeout(doRetry, 1500);
+    </script>
+  </body>
+  </html>
