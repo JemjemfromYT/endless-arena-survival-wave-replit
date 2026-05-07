@@ -6,7 +6,7 @@
 //
 // Leave empty ('') when everything is hosted on Replit.
 // -----------------------------------------------
-window.BACKEND_URL = 'https://YOUR-REPLIT-APP.replit.app'; // <-- replace with your Replit deployed URL
+window.BACKEND_URL = 'https://arena-survival--jemjemfromyt.replit.app/'; // <-- replace with your Replit deployed URL
 
 // When BACKEND_URL is set, intercept Image and Audio creation
 // so /game/images/ and /game/sounds/ paths resolve to the backend.
